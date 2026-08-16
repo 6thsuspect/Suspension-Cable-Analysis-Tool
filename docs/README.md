@@ -5,10 +5,18 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/license-Apache License 2.0-green.svg" alt="License">
-  <img src="https://img.shields.io/badge/TypeScript-5.0+-blue.svg" alt="TypeScript">
-  <img src="https://img.shields.io/badge/React-19.x-61dafb.svg" alt="React">
+  <a href="https://img.shields.io/badge/version-0.1.1-blue.svg">
+    <img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version">
+  </a>
+  <a href="https://www.apache.org/licenses/LICENSE-2.0">
+    <img src="https://img.shields.io/badge/license-Apache%20License%202.0-green.svg" alt="Apache License 2.0">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/TypeScript-5.0+-blue.svg" alt="TypeScript">
+  </a>
+  <a href="https://react.dev/">
+    <img src="https://img.shields.io/badge/React-19.x-61dafb.svg" alt="React">
+  </a>
 </p>
 
 ---
