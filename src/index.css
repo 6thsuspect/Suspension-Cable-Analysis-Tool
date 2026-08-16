@@ -71,3 +71,10 @@ input[type="range"]:active::-webkit-slider-thumb {
 .recharts-cartesian-grid-vertical line {
   stroke: #e2e8f0;
 }
+
+/* Diagram pan/zoom cursor states */
+.cursor-grab { cursor: grab; }
+.cursor-grabbing { cursor: grabbing !important; }
+.cursor-grab svg * { pointer-events: visiblePainted; }
+.cursor-grabbing svg * { pointer-events: none !important; }
+.cursor-grabbing svg g[class*="cursor-grab"] { pointer-events: none !important; }

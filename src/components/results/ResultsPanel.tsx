@@ -69,6 +69,32 @@ const CableResults: React.FC = () => {
         <ResultRow label="Span" value={solverResult.points.length > 0 ? solverResult.points[solverResult.points.length - 1].x - solverResult.points[0].x : 0} unit="m" />
       </ResultCard>
 
+      {/* Cable Angles at Key Points */}
+      {solverResult.keyPoints && solverResult.keyPoints.length > 0 && (
+        <ResultCard title="Cable Angles" icon="📐">
+          {solverResult.keyPoints.map((kp) => {
+            const label = kp.type === 'support-left' 
+              ? 'Left Support' 
+              : kp.type === 'support-right' 
+                ? 'Right Support' 
+                : `Load @ X=${kp.x.toFixed(0)}m`;
+            const angle = kp.type === 'support-left' 
+              ? kp.angleRight 
+              : kp.type === 'support-right' 
+                ? kp.angleLeft 
+                : `${kp.angleLeft.toFixed(1)}° / ${kp.angleRight.toFixed(1)}°`;
+            return (
+              <div key={kp.id} className="flex justify-between items-center py-0.5">
+                <span className="text-[11px] text-slate-500">{label}</span>
+                <span className="font-mono text-[11px] text-purple-600">
+                  {typeof angle === 'number' ? `${angle.toFixed(1)}°` : angle}
+                </span>
+              </div>
+            );
+          })}
+        </ResultCard>
+      )}
+
       {stressResult && (
         <ResultCard title="Cable Stress" icon="🔧">
           <ResultRow label="Max Stress" value={stressResult.maxStress} unit="MPa" />
