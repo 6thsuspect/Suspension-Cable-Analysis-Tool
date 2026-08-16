@@ -129,6 +129,23 @@ export interface CableSegment {
   avgTension: number;
 }
 
+// --- Key Point (support or load location) ---
+export interface KeyPoint {
+  id: string;
+  type: 'support-left' | 'support-right' | 'point-load';
+  x: number;
+  y: number;
+  angleLeft: number;   // degrees - cable angle on left side (from horizontal)
+  angleRight: number;  // degrees - cable angle on right side (from horizontal)
+  tensionLeft: number;  // kN - tension in cable on left side
+  tensionRight: number; // kN - tension in cable on right side
+  H: number;           // kN - horizontal component
+  Vup: number;         // kN - vertical reaction (upward, for supports)
+  Vdown: number;       // kN - vertical load (downward, for point loads)
+  loadMagnitude?: number; // kN - point load magnitude (if applicable)
+  loadDescription?: string;
+}
+
 // --- Solver Result ---
 export interface CableSolverResult {
   converged: boolean;
@@ -143,6 +160,7 @@ export interface CableSolverResult {
   leftReaction: { H: number; V: number };
   rightReaction: { H: number; V: number };
   equilibriumResidual: { Fx: number; Fy: number };
+  keyPoints: KeyPoint[];  // angles and forces at supports and load points
 }
 
 // --- Pulley Result ---

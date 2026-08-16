@@ -12,6 +12,7 @@ import type {
   CableSegment,
   CableSolverResult,
   CalculationStep,
+  KeyPoint,
 } from '../../models/types';
 
 // ----- Helper: span -----
@@ -342,20 +343,25 @@ export function solveCable(
     });
   }
 
-  // --- Step 5: Reactions ---
-  const firstSlope = points.length > 1
-    ? (points[1].y - points[0].y) / (points[1].x - points[0].x)
-    : 0;
-  const lastSlope = points.length > 1
-    ? (points[points.length - 1].y - points[points.length - 2].y) /
-      (points[points.length - 1].x - points[points.length - 2].x)
-    : 0;
-
-  const VaCalc = -H * firstSlope;
-  const VbCalc = H * lastSlope;
+  // --- Step 5: Reactions (ANALYTICAL, not from numerical slopes) ---
+  //
+  //   Taking moments about the right support:
+  //     Va * L = Σ Pi*(L - xi) + w*L²/2 + H*(rightY - leftY)
+  //
+  //   Vertical equilibrium gives:
+  //     Vb = totalLoad - Va
+  //
+  const totalVerticalLoad = totalPointLoad + effectiveW * span;
+  const dY = geometry.rightPylonY - geometry.leftPylonY;
+  let momentAboutB = 0;
+  for (const pl of vLoads) {
+    momentAboutB += pl.magnitude * (span - pl.x);
+  }
+  momentAboutB += (effectiveW * span * span) / 2;
+  const VaCalc = (momentAboutB + H * dY) / span;
+  const VbCalc = totalVerticalLoad - VaCalc;
 
   // Equilibrium check
-  const totalVerticalLoad = totalPointLoad + effectiveW * span;
   const Fy = VaCalc + VbCalc - totalVerticalLoad;
 
   // Build segments
@@ -374,6 +380,104 @@ export function solveCable(
     cableSegments.push(seg);
   }
 
+  // --- Step 6: Build key points (supports and load locations) ---
+  //
+  // Cable angle must be computed from the ANALYTICAL shear force, not by
+  // interpolating the discretized profile.  At a point load the shear
+  // jumps by P, so the slope is different on each side.
+  //
+  //   V(x) = Va − w·x − Σ Pi   (for all loads at xi ≤ x)
+  //   slope = −V / H
+  //   angle = atan(slope)        (radians → degrees)
+  //   T     = √(H² + V²)
+  //
+  // Va (= VaCalc) was already computed analytically in Step 5.
+
+  // Helper: analytical shear, slope, angle, tension at position x.
+  // `includeLoadAtX` controls whether a load exactly at x is subtracted
+  // (false = "just left of load", true = "just right of / at load").
+  const analyticalAtX = (
+    x: number,
+    includeLoadAtX: boolean
+  ): { V: number; slope: number; angle: number; T: number } => {
+    let V = VaCalc - effectiveW * x;
+    for (const pl of vLoads) {
+      if (includeLoadAtX ? pl.x <= x : pl.x < x - 1e-9) {
+        V -= pl.magnitude;
+      }
+    }
+    const slope = -V / H;                          // dy/dx
+    const angle = Math.atan(slope) * (180 / Math.PI); // degrees
+    const T = Math.sqrt(H * H + V * V);
+    return { V, slope, angle, T };
+  };
+
+  const keyPoints: KeyPoint[] = [];
+
+  // Left support — cable leaves to the right
+  const leftA = analyticalAtX(0, false);
+  keyPoints.push({
+    id: 'support-left',
+    type: 'support-left',
+    x: geometry.leftPylonX,
+    y: geometry.leftPylonY,
+    angleLeft: 0,
+    angleRight: leftA.angle,
+    tensionLeft: 0,
+    tensionRight: leftA.T,
+    H,
+    Vup: VaCalc,
+    Vdown: 0,
+  });
+
+  // Right support — cable arrives from the left
+  const rightA = analyticalAtX(span, true);
+  keyPoints.push({
+    id: 'support-right',
+    type: 'support-right',
+    x: geometry.rightPylonX,
+    y: geometry.rightPylonY,
+    angleLeft: rightA.angle,
+    angleRight: 0,
+    tensionLeft: rightA.T,
+    tensionRight: 0,
+    H,
+    Vup: VbCalc,
+    Vdown: 0,
+  });
+
+  // Point loads — left side EXCLUDES the load, right side INCLUDES it
+  for (const pl of vLoads) {
+    const leftSide  = analyticalAtX(pl.x, false); // shear just left of load
+    const rightSide = analyticalAtX(pl.x, true);  // shear just right of load
+
+    // Find cable Y at load position from the discretized profile
+    let loadY = geometry.leftPylonY;
+    for (let i = 0; i < points.length - 1; i++) {
+      if (points[i].x <= pl.x && points[i + 1].x >= pl.x) {
+        const t = (pl.x - points[i].x) / (points[i + 1].x - points[i].x);
+        loadY = points[i].y + t * (points[i + 1].y - points[i].y);
+        break;
+      }
+    }
+
+    keyPoints.push({
+      id: pl.id,
+      type: 'point-load',
+      x: pl.x,
+      y: loadY,
+      angleLeft: leftSide.angle,
+      angleRight: rightSide.angle,
+      tensionLeft: leftSide.T,
+      tensionRight: rightSide.T,
+      H,
+      Vup: 0,
+      Vdown: pl.magnitude,
+      loadMagnitude: pl.magnitude,
+      loadDescription: pl.description,
+    });
+  }
+
   return {
     converged,
     iterations,
@@ -387,6 +491,7 @@ export function solveCable(
     leftReaction: { H, V: VaCalc },
     rightReaction: { H, V: VbCalc },
     equilibriumResidual: { Fx: 0, Fy },
+    keyPoints,
   };
 }
 

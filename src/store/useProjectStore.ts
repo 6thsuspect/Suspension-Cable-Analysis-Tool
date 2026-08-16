@@ -182,6 +182,18 @@ interface ProjectStore {
     showDimensions: boolean;
     showTension: boolean;
   };
+  labelStyle: {
+    cableColor: string;
+    pylonColor: string;
+    loadColor: string;
+    reactionColor: string;
+    angleColor: string;
+    dimColor: string;
+    cableWidth: number;
+    pylonWidth: number;
+    fontSize: number;
+    labelOffset: number;
+  };
 
   // Actions
   updateGeometry: (geo: Partial<CableGeometry>) => void;
@@ -197,6 +209,7 @@ interface ProjectStore {
   setActiveTab: (tab: string) => void;
   toggleCalculations: () => void;
   toggleDiagramOption: (option: keyof ProjectStore['diagramOptions']) => void;
+  updateLabelStyle: (style: Partial<ProjectStore['labelStyle']>) => void;
   runAnalysis: () => void;
   exportProject: () => string;
   importProject: (json: string) => void;
@@ -226,6 +239,18 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     showForceArrows: true,
     showDimensions: true,
     showTension: false,
+  },
+  labelStyle: {
+    cableColor: '#0891b2',
+    pylonColor: '#475569',
+    loadColor: '#dc2626',
+    reactionColor: '#16a34a',
+    angleColor: '#8b5cf6',
+    dimColor: '#64748b',
+    cableWidth: 0.8,
+    pylonWidth: 3,
+    fontSize: 2,
+    labelOffset: 3,
   },
 
   updateGeometry: (geo) => {
@@ -339,6 +364,10 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   toggleDiagramOption: (option) =>
     set((s) => ({
       diagramOptions: { ...s.diagramOptions, [option]: !s.diagramOptions[option] },
+    })),
+  updateLabelStyle: (style) =>
+    set((s) => ({
+      labelStyle: { ...s.labelStyle, ...style },
     })),
 
   runAnalysis: () => {

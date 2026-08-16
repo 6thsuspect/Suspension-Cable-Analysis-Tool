@@ -5,9 +5,10 @@ import { CableDiagram } from './components/diagrams/CableDiagram';
 import { ResultsPanel } from './components/results/ResultsPanel';
 import { ChartsPanel } from './components/charts/ChartsPanel';
 import { CalculationPanel } from './components/calculations/CalculationPanel';
+import { FreeBodyDiagram } from './components/diagrams/FreeBodyDiagram';
 import { useProjectStore } from './store/useProjectStore';
 
-type BottomTab = 'charts' | 'calculations';
+type BottomTab = 'charts' | 'calculations' | 'fbd';
 
 const App: React.FC = () => {
   const { loadFromLocalStorage } = useProjectStore();
@@ -49,6 +50,16 @@ const App: React.FC = () => {
               📈 Charts & Graphs
             </button>
             <button
+              onClick={() => setBottomTab('fbd')}
+              className={`px-4 py-1.5 text-xs font-medium border-b-2 transition ${
+                bottomTab === 'fbd'
+                  ? 'border-cyan-500 text-cyan-700'
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              ⚖️ Free Body Diagrams
+            </button>
+            <button
               onClick={() => setBottomTab('calculations')}
               className={`px-4 py-1.5 text-xs font-medium border-b-2 transition ${
                 bottomTab === 'calculations'
@@ -60,9 +71,10 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          {/* Bottom: Charts or Calculations */}
+          {/* Bottom: Charts, FBD, or Calculations */}
           <div className="h-64 min-h-[200px] overflow-hidden">
             {bottomTab === 'charts' && <ChartsPanel />}
+            {bottomTab === 'fbd' && <FreeBodyDiagram />}
             {bottomTab === 'calculations' && <CalculationPanel />}
           </div>
         </div>
