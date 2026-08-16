@@ -8,7 +8,7 @@
   <a href="https://img.shields.io/badge/version-0.1.1-blue.svg">
     <img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version">
   </a>
-  <a href="[https://www.apache.org/licenses/LICENSE-2.0](https://github.com/6thsuspect/Suspension-Cable-Analysis-Tool/blob/9600cbe340926d18b6a0b9d8dbf4436c2b989a21/LICENSE)">
+  <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-Apache%20License%202.0-green.svg" alt="Apache License 2.0">
   </a>
   <a href="https://www.typescriptlang.org/">
