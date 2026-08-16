@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
   <img src="https://img.shields.io/badge/TypeScript-5.0+-blue.svg" alt="TypeScript">
   <img src="https://img.shields.io/badge/React-19.x-61dafb.svg" alt="React">
@@ -176,26 +176,32 @@ src/
 ---
 
 ## Roadmap
-
-### v0.1.0 (Current) — MVP
+### v0.1.0 
 - ✅ Single/multiple point loads
 - ✅ Cable self-weight
 - ✅ Pylon and direct anchor modes
 - ✅ Interactive diagram
 - ✅ PDF export
 
-### v0.2.0 — Enhanced Analysis
+### v0.1.1 (Current) — MVP
+- ✅ Button added Zooms in/out by 30%, centered on the current viewport
+- ✅ Button added Fit Automatically resets the viewport so the entire cable system is visible
+- ✅ Label Settings button to modify Dynamic figure panel 
+- ✅ PDF export report modified
+- ✅ Display the angle of cables with respect to the horizontal
+
+### v0.1.2 — Enhanced Analysis
 - [ ] Elastic cable elongation
 - [ ] Temperature effects
 - [ ] Numerical cable solver improvements
 
-### v0.3.0 — Advanced Features
+### v0.1.3 — Advanced Features
 - [ ] Load combinations
 - [ ] Multiple load cases
 - [ ] Excel export
 - [ ] DXF export
 
-### v1.0.0 — Production Release
+### v0.1.4 — Production Release
 - [ ] Full validation test suite
 - [ ] Code-based design checks
 - [ ] Electron desktop packaging
@@ -210,7 +216,7 @@ Contributions are welcome! Please read the [Development Guide](./DEVELOPMENT_GUI
 
 ## License
 
-MIT License — see [LICENSE](../LICENSE) for details.
+Apache License 2.0 — see [LICENSE](../LICENSE) for details.
 
 ---
 
