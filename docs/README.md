@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-0.1.1-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
+  <img src="https://img.shields.io/badge/license-Apache License 2.0-green.svg" alt="License">
   <img src="https://img.shields.io/badge/TypeScript-5.0+-blue.svg" alt="TypeScript">
   <img src="https://img.shields.io/badge/React-19.x-61dafb.svg" alt="React">
 </p>
